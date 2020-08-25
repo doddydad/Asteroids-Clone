@@ -16,6 +16,8 @@ Created on Wed Aug 19 21:30:24 2020
 #    Maybe now "fixed" by extending buffer
 # New issue arising from said fix. Asteroids kill you before you overlap at all
 
+# Todo add varying ammounts of health to things
+
 import math, random
 from livewires import games, color
 
@@ -45,6 +47,7 @@ class Screenwrapper(games.Sprite):
 
 class Collider(Screenwrapper):
     """ Can also collide with objects """
+    HEALTH = 1
 
     def update(self):
         """ Check for overlapping sprites """
@@ -53,7 +56,10 @@ class Collider(Screenwrapper):
 
         if self.overlapping_sprites:
             for sprite in self.overlapping_sprites:
-                sprite.die()
+                sprite.HEALTH -= 1
+            self.HEALTH -= 1
+
+        if self.HEALTH <= 0:
             self.die()
 
     def die(self):
@@ -149,9 +155,17 @@ class Asteroid(Screenwrapper):
             dy=random.choice([1, -1]) * Asteroid.SPEED * random.random()/size)
 
         self.size = size
+        self.HEALTH = size
         self.game = game
 
         Asteroid.total += 1
+
+    def update(self):
+        """ Reduced health """
+        super(Asteroid, self).update()
+
+        if self.HEALTH <= 0:
+            self.die()
 
     # Confused why course wants me to make this.
     def die(self):
