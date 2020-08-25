@@ -53,13 +53,17 @@ class Collider(Screenwrapper):
 
         super(Collider, self).update()
 
-        if self.overlapping_sprites:
+        if self.overlapping_sprites and self.invulnerability_time == 0 or None:
             for sprite in self.overlapping_sprites:
                 sprite.health -= 1
+                self.invulnerability_time = 25
             self.health -= 1
 
         if self.health <= 0:
             self.die()
+
+        if self.invulnerability_time > 0:
+            self.invulnerability_time -= 1
 
     def die(self):
         """ Destroy self and leave an explosion """
@@ -120,6 +124,7 @@ class Missile(Collider):
 
         self.lifetime = Missile.LIFETIME
         self.health = 1
+        self.invulnerability_time = 0
 
     def update(self):
         """ Move then destroy missile"""
@@ -205,6 +210,15 @@ class Ship(Collider):
         self.missile_wait = 0
         self.game = game
         self.health = 5
+        self.invulnerability_time = 0
+
+        self.health_message = games.Text(value="Health:"+str(self.health),
+                                         size=30,
+                                         color=color.white,
+                                         left=10,
+                                         top=5,
+                                         is_collideable=False)
+        games.screen.add(self.health_message)
 
     def update(self):
         """ Rotate based on keys pressed """
@@ -228,6 +242,8 @@ class Ship(Collider):
             new_missile = Missile(self.x, self.y, self.angle)
             games.screen.add(new_missile)
             self.missile_wait = Ship.MISSILE_DELAY
+
+        self.health_message.value = "Health:"+str(self.health)
 
         super(Ship, self).update()
         if self.missile_wait > 0:
@@ -300,7 +316,7 @@ class Game(object):
             games.screen.add(new_asteroid)
 
         # Display level number
-        level_message = games.Message(value="Level"+str(self.level),
+        level_message = games.Message(value="Level "+str(self.level),
                                       size=40,
                                       color=color.yellow,
                                       x=games.screen.width/2,
