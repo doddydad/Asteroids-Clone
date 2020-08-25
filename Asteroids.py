@@ -47,7 +47,6 @@ class Screenwrapper(games.Sprite):
 
 class Collider(Screenwrapper):
     """ Can also collide with objects """
-    HEALTH = 1
 
     def update(self):
         """ Check for overlapping sprites """
@@ -56,10 +55,10 @@ class Collider(Screenwrapper):
 
         if self.overlapping_sprites:
             for sprite in self.overlapping_sprites:
-                sprite.HEALTH -= 1
-            self.HEALTH -= 1
+                sprite.health -= 1
+            self.health -= 1
 
-        if self.HEALTH <= 0:
+        if self.health <= 0:
             self.die()
 
     def die(self):
@@ -120,6 +119,7 @@ class Missile(Collider):
                                       dx=dx, dy=dy)
 
         self.lifetime = Missile.LIFETIME
+        self.health = 1
 
     def update(self):
         """ Move then destroy missile"""
@@ -155,7 +155,7 @@ class Asteroid(Screenwrapper):
             dy=random.choice([1, -1]) * Asteroid.SPEED * random.random()/size)
 
         self.size = size
-        self.HEALTH = size
+        self.health = size
         self.game = game
 
         Asteroid.total += 1
@@ -164,7 +164,7 @@ class Asteroid(Screenwrapper):
         """ Reduced health """
         super(Asteroid, self).update()
 
-        if self.HEALTH <= 0:
+        if self.health <= 0:
             self.die()
 
     # Confused why course wants me to make this.
@@ -204,6 +204,7 @@ class Ship(Collider):
                                    x=x, y=y)
         self.missile_wait = 0
         self.game = game
+        self.health = 5
 
     def update(self):
         """ Rotate based on keys pressed """
