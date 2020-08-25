@@ -5,18 +5,8 @@ Created on Wed Aug 19 21:30:24 2020
 @author: Andrew
 """
 
-# Asteriods Crash 07
-# Adds music and scorekeeping
+# Asteriods Clone
 
-
-# Bugs:
-# Only one sound effect at a time
-#   big idk
-# Can't fire at 45 degrees and missile and ship overlap with square sprites
-#    Maybe now "fixed" by extending buffer
-# New issue arising from said fix. Asteroids kill you before you overlap at all
-
-# Todo add varying ammounts of health to things
 
 import math, random
 from livewires import games, color
